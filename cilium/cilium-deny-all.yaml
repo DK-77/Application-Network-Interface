@@ -1,0 +1,12 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: cilium-deny-all
+spec:
+  egressDeny:
+  - toEntities:
+    - all
+  endpointSelector: {}
+  ingressDeny:
+  - fromEntities:
+    - all

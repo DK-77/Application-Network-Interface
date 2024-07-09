@@ -1,0 +1,12 @@
+apiVersion: ani/v1
+kind: ani-network-policy
+target: baremetal
+cni: cilium
+namespace: all
+metadata: 
+  name: cilium-deny-all
+spec:
+  endpointSelector: {}
+  types:
+  - ingress
+  - egress
