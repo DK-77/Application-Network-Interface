@@ -1,0 +1,11 @@
+apiVersion: projectcalico.org/v3
+kind: Networkpolicy
+metadata:
+  name: calico-backend-policy
+  namespace: test-1
+spec:
+  egress:
+  - action: Allow
+  ingress:
+  - action: Allow
+  selector: tier == backend

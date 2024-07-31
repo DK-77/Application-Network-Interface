@@ -1,0 +1,19 @@
+apiVersion: ani/v1
+kind: ANINetworkPolicy
+target: baremetal
+cni: calico
+metadata: 
+  name: calico-frontend-policy
+  namespace: test-1
+spec:
+  selector:
+    labels: 
+    - tier = frontend
+  egress:
+  - action: Allow
+  ingress:
+  - action: Deny
+    from:
+      target: tier = 'frontend'
+  - action: Allow
+    

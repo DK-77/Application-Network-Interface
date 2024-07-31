@@ -1,12 +1,11 @@
 apiVersion: ani/v1
-kind: ani-network-policy
+kind: ANIGlobalNetworkPolicy
 target: baremetal
 cni: calico
-namespace: all
 metadata: 
   name: calico-deny-all
 spec:
-  endpointSelector: {}
+  targetPod: []
   types:
-  - ingress
-  - egress
+  - Ingress
+  - Egress

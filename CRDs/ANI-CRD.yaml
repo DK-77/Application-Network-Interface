@@ -1,0 +1,81 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: aniglobalnetworkpolicy.crd.ani.io
+spec:
+  group: crd.ani.io
+  names:
+    categories:
+    - aniglobalnetworkpolicies
+    kind: ANIGlobalNetworkPolicy
+    listKind: ANIGlobalNetworkPolicyList
+    plural: ANIGlobalNetworkPolicies
+    shortNames:
+    - agnp
+    singular: aniglobalnetworkpolicy
+  scope: Cluster
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description:  This is a cluster wide network policy,
+         which is applied across all the namespace in the cluster.
+        properties:
+          apiVersion:
+            description: A string that identifies the version of ANI schema.
+            type: string
+          kind:
+            description: A string that identifies type of resource.
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: It is the ANI specific rule specification.
+            properties:
+              selector:
+                description: It is an expression used to select a 
+                  resource on which the policies should be applied.
+                properties:
+                  labels:
+                    descriprion: An expression to select a resource based on K8s Labels.
+                    items:
+                      type: string
+                    type: array
+                  endpointSelector: 
+                    description: selects all endpoints subject to this rule.
+                    type: object
+                  nodeSelector: 
+                    descriprion: selcts the node subject to the rule.
+                    type: object
+                type: object
+              egress:
+                descriprion: It is a set of rules and action to be taken
+                  on the macthing rule on egress traffic.
+                items: 
+                  descriprion:
+                  properties:
+                    action:
+                      type: string
+                    to:                                         # can be named as destination instead of "to"
+                      descriprion:
+                      properties:
+                        target:                                 # can be named as label instead of "target"
+                          type: string
+                      type: object 
+                type: array
+              ingress:
+                descriprion: It is a set of rules and actions to be taken
+                  on matching rule on ingress traffic.
+                items:
+                  descriprion:
+                  properties:
+                    action:
+                      type: string
+                    from:                                        # can be named as source instead of "from"
+                      descriprion:
+                      properties:
+                        target:                                  # can be named as label instead of "target"
+                          type: string
+                      type: object
+                type: array
+            type: object

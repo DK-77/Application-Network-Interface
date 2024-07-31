@@ -1,0 +1,18 @@
+apiVersion: ani/v1
+kind: ANINetworkPolicy
+target: baremetal
+cni: cilium
+metadata: 
+  name: cilium-frontend-policy
+  namespace: test-1
+spec:
+  selector:
+    labels:
+    - tier = frontend
+  egress:
+  - action: Allow
+  ingress:
+  - action: Allow
+    from:
+      target: tier = backend
+  - action: Deny

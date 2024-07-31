@@ -1,0 +1,14 @@
+apiVersion: ani/v1
+kind: ANINetworkpolicy
+target: baremetal
+cni: calico
+metadata: 
+  name: calico-backend-policy
+  namespace: test-1
+spec:
+  targetPod: 
+  - tier = backend
+  ingress:
+  - action: Allow
+  egress:
+  - action: Allow

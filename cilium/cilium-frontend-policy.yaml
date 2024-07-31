@@ -1,0 +1,16 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cilium-frontend-policy
+  namespace: test-1
+spec:
+  egress:
+  - toEntities:
+    - all
+  endpointSelector:
+    matchLabels:
+      tier: frontend
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        tier: backend
