@@ -1,0 +1,56 @@
+apiVersion: ani/v1
+kind: ANINetworkPolicy
+metadata: 
+  name: example-1
+  namespace: application-1
+spec:
+  control-policies:
+  
+  - protocol: allow
+    source: 
+      cluster: cluster-1
+      service: frontend-service
+      labels:
+      - app: frontend
+    destination: 
+      cluster: cluster-1
+      service: backend-service
+      labels:
+      - app: backend
+    order: 1
+    bandwidth: '10M'
+  
+  - protocol: allow
+    source:
+      cluster: cluster-1
+      service: backend-service
+    destination:    
+      cluster: cluster-1
+    order: 2
+    http:
+      path: "/user/getData"
+      method: GET
+    rate-limit:
+      units-per-second: '10'
+
+  - protocol: deny
+    source: 
+      cluster: cluster-1
+      ip: '10.240.3.70'
+      labels:
+      - app: logout
+    destination:
+      cluster: cluster-1
+      service: home-service
+    order: 3 
+
+  - protocol: allow
+    source:
+      cluster: cluster-2
+      service: log-service
+    destination:
+      cluster: cluster-1
+      service: user-service
+    conn-type: TCP
+    ports: 7070
+    
