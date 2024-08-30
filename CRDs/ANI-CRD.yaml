@@ -27,7 +27,7 @@ spec:
                 descriprion: List containing source, destination and rule to be 
                   applied to the connection between them.
                 items:
-                  protocol:
+                  action:
                     descriprion: can be 'allow' or 'deny'.
                     type: string
                   source: 

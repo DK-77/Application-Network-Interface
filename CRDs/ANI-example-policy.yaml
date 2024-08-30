@@ -6,7 +6,7 @@ metadata:
 spec:
   control-policies:
   
-  - protocol: allow
+  - action: allow
     source: 
       cluster: cluster-1
       service: frontend-service
@@ -20,7 +20,7 @@ spec:
     order: 1
     bandwidth: '10M'
   
-  - protocol: allow
+  - action: allow
     source:
       cluster: cluster-1
       service: backend-service
@@ -33,7 +33,7 @@ spec:
     rate-limit:
       units-per-second: '10'
 
-  - protocol: deny
+  - action: deny
     source: 
       cluster: cluster-1
       ip: '10.240.3.70'
@@ -44,7 +44,7 @@ spec:
       service: home-service
     order: 3 
 
-  - protocol: allow
+  - action: allow
     source:
       cluster: cluster-2
       service: log-service
