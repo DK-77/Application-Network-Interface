@@ -34,17 +34,29 @@ spec:
                     descriprion: the source for this particular protocol.
                     properties:
                       cluster:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       node: 
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       namespace:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       name: 
-                        type: string      
+                        items:
+                          type: string
+                        type: array    
                       ip: 
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       ports:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       labels:
                         items:
                           type: string
@@ -54,17 +66,29 @@ spec:
                     descriprion: the destination for this particular protocol.
                     properties:
                       cluster:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       node: 
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       namespace:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       name: 
-                        type: string      
+                        items:
+                          type: string
+                        type: array     
                       ip: 
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       ports:
-                        type: string
+                        items:
+                          type: string
+                        type: array
                       labels:
                         items:
                           type: string
