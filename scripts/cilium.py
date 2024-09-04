@@ -1,28 +1,45 @@
 import yaml
-import argparse
-from ciliumUtils import kind_to_kind_mapping, selector_to_endpointSelector_mapping, egress_to_egress_mapping, ingress_to_ingress_mapping
+import copy
+from ciliumUtils import policy_name,set_src_endpointSelector,set_dst_endpointSelector,set_src_ingress_and_egress,set_dst_ingress_and_egress
 
-parser = argparse.ArgumentParser(description='file name to parse')
-parser.add_argument('policy', type=str, help='relative file path')
-args = parser.parse_args()
+def parseToCiliumPolicy(file):
 
-with open( args.policy, 'r') as file:
-    data = yaml.safe_load(file)
+    with open( file, 'r') as file:
+        data = yaml.safe_load(file)
 
-resource = {}
-resource['apiVersion'] = 'cilium.io/v2'
-resource['kind'] = kind_to_kind_mapping(data['kind'])
-resource['metadata'] = data['metadata']
+    resource = {}
+    resource['apiVersion'] = 'cilium.io/v2'
+    resource['kind'] = data['kind'].replace("ANI","Cilium") # need to look into it
+    resource['metadata'] = data['metadata']
 
-resource['spec'] = {}
-if 'selector' in data['spec']:
-    if 'labels' in data['spec']['selector'] and len(data['spec']['selector']['labels'])>0:
-        resource['spec']['endpointSelector'] = {}
-        resource['spec']['endpointSelector']['matchLabels'] = selector_to_endpointSelector_mapping(data['spec']['selector']['labels'])
-if 'egress' in data['spec']:
-    resource['spec']['egress'] = egress_to_egress_mapping(data['spec']['egress'])
-if 'ingress' in data['spec']:
-    resource['spec']['ingress'] = ingress_to_ingress_mapping(data['spec']['ingress'])
+    resource['spec'] = {}
+    
+    if 'control-policies' in data['spec']:
+        
+        resources = {}  # dict of all the resources for which policies need to be made and corresponding policies.
+        
+        for i,policy in enumerate(data['spec']['control-policies']):
+            labels_src,labels_dst = policy_name(i,policy)
+            if labels_src != '':
+                src = copy.deepcopy(resource)
+                dst = copy.deepcopy(resource)
+                src['metadata']['name'] = labels_src
+                dst['metadata']['name'] = labels_dst
+                src = set_src_endpointSelector(src,policy['source']['labels'])
+                dst = set_dst_endpointSelector(dst,policy['destination']['labels'])
+                resources[labels_src] = src
+                resources[labels_dst] = dst
+        
+        for i,policy in enumerate(data['spec']['control-policies']):
+            labels_src,labels_dst = policy_name(i,policy)
+            if labels_src in resources:
+                resources[labels_src] = set_src_ingress_and_egress(resources[labels_src],policy)
+            if labels_dst in resources:
+                resources[labels_dst] = set_dst_ingress_and_egress(resources[labels_dst],policy)
 
-with open(resource['metadata']['name']+".yaml",'w') as file:
-    yaml.dump(resource,file, default_flow_style=False)
+    else:
+        print("No Control-Policies Specified.\n")
+
+    for key,value in resources.items():
+        with open(key+".yaml",'w') as file:
+            yaml.dump(value,file, default_flow_style=False)
