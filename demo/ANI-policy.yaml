@@ -1,0 +1,103 @@
+apiVersion: ani/v1
+kind: ANINetworkPolicy
+metadata: 
+  name: sample
+  namespace: demo
+spec:
+  control-policies:
+  
+  #policy for green pods
+  - action: allow 
+    source: 
+      cluster: 
+      - cluster-1
+      service:
+      - service-green 
+      labels:
+      - color: green
+    destination: 
+      cluster: 
+      - cluster-1
+      namespace:
+      - demo
+  
+  - action: allow
+    source:
+      cluster:
+      - cluster-1
+      service:
+      - service-green
+      labels:
+      - color: green
+    destination:
+      cluster:
+      - cluster-2
+      namespace:
+      - demo
+
+  # # policy for yellow pods
+
+  - action: allow
+    source:
+      cluster:
+      - cluster-1
+      ip:
+      - 10.244.214.154
+      - 10.244.214.143
+    destination:
+      cluster:
+      - cluster-1
+      service:
+      - service-green
+      - service-yellow
+
+  - action: deny
+    source: 
+      cluster:
+      - cluster-1
+      service:
+      - service-yellow
+    destination:
+      cluster:
+      - cluster-1
+      name:
+      - pod-red
+
+  - action: deny 
+    source:
+      cluster:
+      - cluster-1
+      labels:
+      - color: yellow
+    destination:
+      cluster: 
+      - cluster-2 
+      namespace:
+      - demo
+
+  # # policy for red pods
+
+  - action: deny
+    source:
+      cluster:
+      - cluster-1
+      name:
+      - pod-red
+    destination:
+      cluster:
+      - cluster-1
+      namespace:
+      - demo  
+  
+  - action: deny
+    source:
+      cluster:
+      - cluster-1
+      ip:
+      - 10.244.214.151
+      - 10.244.214.174
+    destination:
+      cluster:
+      - cluster-2
+      namespace:
+      - demo
